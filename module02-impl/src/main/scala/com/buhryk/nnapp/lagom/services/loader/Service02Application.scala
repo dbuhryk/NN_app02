@@ -12,8 +12,6 @@ import play.api.libs.ws.ahc.AhcWSComponents
 abstract class Service02Application(context: LagomApplicationContext) extends LagomApplication(context)
   with AhcWSComponents {
 
-  lazy val nnService = serviceClient.implement[Service02]
-
   override lazy val lagomServer = serverFor[Service02](wire[Service02Impl])
 }
 

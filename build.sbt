@@ -29,5 +29,5 @@ lazy val module02impl = (project in file("module02-impl"))
     )
   ).dependsOn(module02api)
 
-lagomCassandraEnabled in ThisBuild := false
-lagomKafkaEnabled in ThisBuild := false
+//lagomCassandraEnabled in ThisBuild := false
+//lagomKafkaEnabled in ThisBuild := false
