@@ -1,6 +1,6 @@
 lazy val root = (project in file("."))
   .settings(name := "NN Application")
-  .aggregate(module02api, module02impl)
+  .aggregate(replacerapi, replacerimpl, restfulbeapi, restfulbeimpl)
 
 organization in ThisBuild := "com.buhryk"
 
@@ -12,22 +12,40 @@ val macwire = "com.softwaremill.macwire" %% "macros" % "2.2.5" % "provided"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.0.1" % Test
 val playJsonDerivedCodecs = "org.julienrf" %% "play-json-derived-codecs" % "4.0.0"
 
-lazy val module02api = (project in file("module02-api"))
+lazy val replacerapi = (project in file("module-replacer-api"))
   .settings(
-  libraryDependencies ++= Seq(
-    lagomScaladslApi,
-    playJsonDerivedCodecs
+    libraryDependencies ++= Seq(
+      lagomScaladslApi,
+      playJsonDerivedCodecs
+    )
   )
-)
 
-lazy val module02impl = (project in file("module02-impl"))
+lazy val replacerimpl = (project in file("module-replacer-impl"))
   .enablePlugins(LagomScala)
   .settings(
     libraryDependencies ++= Seq(
       lagomScaladslServer,
       macwire
     )
-  ).dependsOn(module02api)
+  ).dependsOn(replacerapi)
+
+lazy val restfulbeapi = (project in file("module-restfulbe-api"))
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomScaladslApi,
+      playJsonDerivedCodecs
+    )
+  )
+
+lazy val restfulbeimpl = (project in file("module-restfulbe-impl"))
+  .enablePlugins(LagomScala)
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomScaladslServer,
+      macwire
+    )
+  ).dependsOn(restfulbeapi, replacerapi)
+
 
 //lagomCassandraEnabled in ThisBuild := false
 //lagomKafkaEnabled in ThisBuild := false
