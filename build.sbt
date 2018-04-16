@@ -1,6 +1,6 @@
 lazy val root = (project in file("."))
   .settings(name := "NN Application")
-  .aggregate(replacerapi, replacerimpl, restfulbeapi, restfulbeimpl)
+  .aggregate(replacerapi, replacerimpl, restfulbeapi, restfulbeimpl, webgateway)
 
 organization in ThisBuild := "com.buhryk"
 
@@ -13,6 +13,7 @@ val scalaTest = "org.scalatest" %% "scalatest" % "3.0.1" % Test
 val playJsonDerivedCodecs = "org.julienrf" %% "play-json-derived-codecs" % "4.0.0"
 
 lazy val replacerapi = (project in file("module-replacer-api"))
+  .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
       lagomScaladslApi,
@@ -21,6 +22,7 @@ lazy val replacerapi = (project in file("module-replacer-api"))
   )
 
 lazy val replacerimpl = (project in file("module-replacer-impl"))
+  .settings(commonSettings: _*)
   .enablePlugins(LagomScala)
   .settings(
     libraryDependencies ++= Seq(
@@ -30,6 +32,7 @@ lazy val replacerimpl = (project in file("module-replacer-impl"))
   ).dependsOn(replacerapi)
 
 lazy val restfulbeapi = (project in file("module-restfulbe-api"))
+  .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
       lagomScaladslApi,
@@ -38,6 +41,7 @@ lazy val restfulbeapi = (project in file("module-restfulbe-api"))
   )
 
 lazy val restfulbeimpl = (project in file("module-restfulbe-impl"))
+  .settings(commonSettings: _*)
   .enablePlugins(LagomScala)
   .settings(
     libraryDependencies ++= Seq(
@@ -46,6 +50,24 @@ lazy val restfulbeimpl = (project in file("module-restfulbe-impl"))
     )
   ).dependsOn(restfulbeapi, replacerapi)
 
+lazy val webgateway = (project in file("module-web-gateway"))
+  .settings(commonSettings: _*)
+  .enablePlugins(PlayScala && LagomPlay)
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomScaladslServer,
+      macwire,
+      playJsonDerivedCodecs,
+      "org.ocpsoft.prettytime" % "prettytime" % "3.2.7.Final",
+      "org.webjars" % "foundation" % "6.2.3",
+      "org.webjars" % "foundation-icon-fonts" % "d596a3cfb3"
+    ),
+    httpIngressPaths := Seq("/")
+  )
+
+def commonSettings: Seq[Setting[_]] = Seq(
+)
 
 //lagomCassandraEnabled in ThisBuild := false
 //lagomKafkaEnabled in ThisBuild := false
+//lagomUnmanagedServices in ThisBuild += ("elastic-search" -> "http://127.0.0.1:9200")
