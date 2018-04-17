@@ -1,3 +1,4 @@
+import com.buhryk.nnapp.lagom.services.api.TextReplaceRestfulService
 import com.lightbend.lagom.scaladsl.api.ServiceLocator.NoServiceLocator
 import com.lightbend.lagom.scaladsl.api.{LagomConfigComponent, ServiceAcl, ServiceInfo}
 import com.lightbend.lagom.scaladsl.client.LagomServiceClientComponents
@@ -13,7 +14,7 @@ import router.Routes
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 
-abstract class WebGateway(context: Context) extends BuiltInComponentsFromContext(context)
+abstract class WebGatewayModule(context: Context) extends BuiltInComponentsFromContext(context)
   //with AssetsComponents
   with HttpFiltersComponents
   with AhcWSComponents
@@ -34,14 +35,15 @@ abstract class WebGateway(context: Context) extends BuiltInComponentsFromContext
   }
 
   lazy val main = wire[Main]
+  lazy val replaceRestfulService = serviceClient.implement[TextReplaceRestfulService]
 }
 
 class WebGatewayLoader extends ApplicationLoader {
   override def load(context: Context): Application = context.environment.mode match {
     case Mode.Dev =>
-      new WebGateway(context) with LagomDevModeComponents {}.application
+      new WebGatewayModule(context) with LagomDevModeComponents {}.application
     case _ =>
-      new WebGateway(context) {
+      new WebGatewayModule(context) {
         override def serviceLocator = NoServiceLocator
       }.application
   }

@@ -63,7 +63,7 @@ lazy val webgateway = (project in file("module-web-gateway"))
       "org.webjars" % "foundation-icon-fonts" % "d596a3cfb3"
     ),
     httpIngressPaths := Seq("/")
-  )
+  ).dependsOn(restfulbeapi)
 
 def commonSettings: Seq[Setting[_]] = Seq(
 )

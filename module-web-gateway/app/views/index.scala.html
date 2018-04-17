@@ -1,20 +1,15 @@
-@(name: String)(implicit flash: Flash)
+@(callcounter: Int)(implicit flash: Flash)
 <html>
 @* This template is a simple html template --- (this text btw. is a comment and is not rendered) *@
 <head>
-<title>Welcome @name!!</title>
+<title>NN Application Lagom</title>
 </head>
-<!--<body>-->
-<!--<form method=post enctype=multipart/form-data>-->
-    <!--<p><input type=file name=file>-->
-        <!--<input type=submit value=Upload>-->
-<!--</form>-->
+<body>
+<h1>Upload new File</h1>
+<h6>@flash.get("error")</h6>
 @helper.form(action = routes.Main.submit, 'enctype -> "multipart/form-data") {
-<input type="file" name="file">
-<p>
-    <input type="submit">
-</p>
+<p><input type="file" name="file"><input type="submit">
 }
-<h6>@flash.get("success").getOrElse("Welcome!")</h6>
+<h6>Application call counter: @callcounter</h6>
 </body>
 </html>
