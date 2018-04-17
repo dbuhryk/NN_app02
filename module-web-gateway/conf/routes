@@ -1,1 +1,2 @@
 GET         /                           controllers.Main.index
+POST        /                           controllers.Main.submit

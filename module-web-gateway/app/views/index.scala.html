@@ -1,5 +1,20 @@
-@(name: String)
+@(name: String)(implicit flash: Flash)
 <html>
 @* This template is a simple html template --- (this text btw. is a comment and is not rendered) *@
-<h1>Welcome @name!!</h1>
+<head>
+<title>Welcome @name!!</title>
+</head>
+<!--<body>-->
+<!--<form method=post enctype=multipart/form-data>-->
+    <!--<p><input type=file name=file>-->
+        <!--<input type=submit value=Upload>-->
+<!--</form>-->
+@helper.form(action = routes.Main.submit, 'enctype -> "multipart/form-data") {
+<input type="file" name="file">
+<p>
+    <input type="submit">
+</p>
+}
+<h6>@flash.get("success").getOrElse("Welcome!")</h6>
+</body>
 </html>
