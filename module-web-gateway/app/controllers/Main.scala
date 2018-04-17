@@ -7,8 +7,7 @@ import com.buhryk.nnapp.lagom.services.api.{TextReplaceRestfulService, TextReque
 import play.api.libs.Files.TemporaryFile
 import play.api.mvc.{Action, AnyContent, ControllerComponents, MultipartFormData}
 
-import scala.concurrent.duration.FiniteDuration
-import scala.concurrent.{Await, ExecutionContext, Future, duration}
+import scala.concurrent.{ExecutionContext, Future}
 
 class Main(replaceRestfulService: TextReplaceRestfulService, controllerComponents: ControllerComponents)
           (implicit ec: ExecutionContext)
@@ -19,11 +18,9 @@ class Main(replaceRestfulService: TextReplaceRestfulService, controllerComponent
     counterResponse.map { counter =>
       Ok(views.html.index(counter.counter))
     }
-    //Future(Ok(views.html.index(0)))
   }
 
   def submit: Action[MultipartFormData[TemporaryFile]] = Action.async(parse.multipartFormData) { request =>
-    //Request[MultipartFormData[TemporaryFile]]
     request.body.file("file").map { f =>
       if (f.ref.length() > 0) {
         val filename = Paths.get(f.filename).getFileName
@@ -31,19 +28,18 @@ class Main(replaceRestfulService: TextReplaceRestfulService, controllerComponent
         val str = Stream.continually(br.readLine()).takeWhile(_ != null).mkString("\n")
         //f.ref.moveTo(Paths.get(s"$filename"), replace = true)
         val textResponseFuture = replaceRestfulService.replaceText.invoke(TextRequest(Some(str)))
-        val textResponse = Await.result(textResponseFuture, FiniteDuration(5000,duration.MILLISECONDS))
-        val new_f = f.ref.temporaryFileCreator.create()
-        new_f.deleteOnExit()
-        val bw = new BufferedWriter(new FileWriter(new_f));
-        bw.write(textResponse.text)
-        bw.close()
+
         textResponseFuture.map {
           textResponse => {
             val new_f = f.ref.temporaryFileCreator.create()
             new_f.deleteOnExit()
+            val bw = new BufferedWriter(new FileWriter(new_f));
+            bw.write(textResponse.text)
+            bw.close()
+            Ok.sendFile(new_f, inline=false, _=>f.filename, onClose = () => { f.ref.deleteOnExit() })
           }
         }
-        Future(Ok.sendFile(new_f, inline=false, _=>f.filename, onClose = () => { f.ref.deleteOnExit() })) }
+      }
       else {
         Future(Redirect(routes.Main.index).flashing(
         "error" -> "No files selected or file is empty"))
