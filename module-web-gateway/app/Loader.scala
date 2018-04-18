@@ -1,7 +1,6 @@
 import com.buhryk.nnapp.lagom.services.api.TextReplaceRestfulService
-import com.lightbend.lagom.scaladsl.api.ServiceLocator.NoServiceLocator
 import com.lightbend.lagom.scaladsl.api.{LagomConfigComponent, ServiceAcl, ServiceInfo}
-import com.lightbend.lagom.scaladsl.client.LagomServiceClientComponents
+import com.lightbend.lagom.scaladsl.client.{ConfigurationServiceLocatorComponents, LagomServiceClientComponents}
 import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents
 import com.softwaremill.macwire._
 import controllers.Main
@@ -43,8 +42,6 @@ class WebGatewayLoader extends ApplicationLoader {
     case Mode.Dev =>
       new WebGatewayModule(context) with LagomDevModeComponents {}.application
     case _ =>
-      new WebGatewayModule(context) {
-        override def serviceLocator = NoServiceLocator
-      }.application
+      new WebGatewayModule(context) with ConfigurationServiceLocatorComponents {}.application
   }
 }

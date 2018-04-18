@@ -2,8 +2,7 @@ package com.buhryk.nnapp.lagom.services.loader
 
 import com.buhryk.nnapp.lagom.services.api.TextReplaceService
 import com.buhryk.nnapp.lagom.services.impl.TextReplaceServiceImpl
-import com.lightbend.lagom.scaladsl.api.ServiceLocator
-import com.lightbend.lagom.scaladsl.api.ServiceLocator.NoServiceLocator
+import com.lightbend.lagom.scaladsl.client.ConfigurationServiceLocatorComponents
 import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents
 import com.lightbend.lagom.scaladsl.server.{LagomApplication, LagomApplicationContext, LagomApplicationLoader}
 import com.softwaremill.macwire.wire
@@ -16,9 +15,7 @@ abstract class TextReplaceModule (context: LagomApplicationContext) extends Lago
 
 class TextReplaceLoader extends LagomApplicationLoader {
   override def load(context: LagomApplicationContext) =
-    new TextReplaceModule(context) {
-      override def serviceLocator: ServiceLocator = NoServiceLocator
-    }
+    new TextReplaceModule(context) with ConfigurationServiceLocatorComponents
 
   override def loadDevMode(context: LagomApplicationContext) =
     new TextReplaceModule(context) with LagomDevModeComponents

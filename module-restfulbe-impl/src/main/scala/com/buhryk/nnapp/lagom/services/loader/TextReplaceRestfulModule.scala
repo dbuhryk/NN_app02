@@ -2,8 +2,7 @@ package com.buhryk.nnapp.lagom.services.loader
 
 import com.buhryk.nnapp.lagom.services.api.{TextReplaceRestfulService, TextReplaceService}
 import com.buhryk.nnapp.lagom.services.impl.TextReplaceRestfulServiceImpl
-import com.lightbend.lagom.scaladsl.api.ServiceLocator
-import com.lightbend.lagom.scaladsl.api.ServiceLocator.NoServiceLocator
+import com.lightbend.lagom.scaladsl.client.ConfigurationServiceLocatorComponents
 import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents
 import com.lightbend.lagom.scaladsl.server.{LagomApplication, LagomApplicationContext, LagomApplicationLoader}
 import com.softwaremill.macwire.wire
@@ -17,9 +16,7 @@ abstract class TextReplaceRestfulModule (context: LagomApplicationContext) exten
 
 class TextReplaceRestfulLoader extends LagomApplicationLoader {
   override def load(context: LagomApplicationContext) =
-    new TextReplaceRestfulModule(context) {
-      override def serviceLocator: ServiceLocator = NoServiceLocator
-    }
+    new TextReplaceRestfulModule(context) with ConfigurationServiceLocatorComponents
 
   override def loadDevMode(context: LagomApplicationContext) =
     new TextReplaceRestfulModule(context) with LagomDevModeComponents
