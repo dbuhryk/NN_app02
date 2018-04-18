@@ -27,7 +27,9 @@ lazy val replacerimpl = (project in file("module-replacer-impl"))
   .settings(
     libraryDependencies ++= Seq(
       lagomScaladslServer,
-      macwire
+      macwire,
+      lagomScaladslTestKit,
+      scalaTest
     )
   ).dependsOn(replacerapi)
 
@@ -46,7 +48,9 @@ lazy val restfulbeimpl = (project in file("module-restfulbe-impl"))
   .settings(
     libraryDependencies ++= Seq(
       lagomScaladslServer,
-      macwire
+      macwire,
+      lagomScaladslTestKit,
+      scalaTest
     )
   ).dependsOn(restfulbeapi, replacerapi)
 
